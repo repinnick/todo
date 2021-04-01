@@ -2,39 +2,37 @@ const $currentTasks = document.querySelector("#currentTasks");
 const $priority = document.querySelectorAll(".form-check-input");
 const $btnAddTask = document.querySelector("#add-button");
 
-let priorityValue = "";
-$priority.forEach((element) => {
-  element.addEventListener("change", (event) => {
-    priorityValue = event.target.value;
-  });
-});
-
+// get title, text, priority
 $btnAddTask.addEventListener("click", (event) => {
   event.preventDefault();
   const title = document.querySelector("#inputTitle").value;
   const text = document.querySelector("#inputText").value;
-  if (!priorityValue) priorityValue = "Medium";
-  console.log(priorityValue);
-  console.log(title);
-  console.log(text);
+  const priorityItems = document.querySelectorAll(".form-check-input");
+  const date = getDate();
+  let priority = "";
+
+  for (let item of priorityItems) {
+    if (item.checked) {
+      priority = item.value;
+    }
+  }
+  addTask(title, text, priority, date);
   document.querySelector("form").reset();
 });
 
-let title = "This title";
-// let priority = "High";
-let description = "Какой-то текст";
-
-let taskItem = `<li class="list-group-item d-flex w-100 mb-2">
+// add task with nessesary parametrs
+function addTask(title, text, priority, date) {
+  let taskItem = `<li class="list-group-item d-flex w-100 mb-2">
                 <div class="w-100 mr-2">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">${title}</h5>
                         <div>
-                            <small class="mr-2">PRIORITY</small>
-                            <small>${getDate()}</small>
+                            <small class="mr-2">${priority} priority</small>
+                            <small>${date}</small>
                         </div>
 
                     </div>
-                    <p class="mb-1 w-100">${description}</p>
+                    <p class="mb-1 w-100">${text}</p>
                 </div>
                 <div class="dropdown m-2 dropleft">
                     <button class="btn btn-secondary h-100" type="button" id="dropdownMenuItem1" 
@@ -49,9 +47,9 @@ let taskItem = `<li class="list-group-item d-flex w-100 mb-2">
                 </div>
             </li>`;
 
-$currentTasks.insertAdjacentHTML("beforeend", taskItem);
+  $currentTasks.insertAdjacentHTML("afterbegin", taskItem);
+}
 
-function addTask() {}
 function createTask() {}
 
 // date create
