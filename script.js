@@ -1,13 +1,15 @@
 const $currentTasks = document.querySelector("#currentTasks");
 const $priority = document.querySelectorAll(".form-check-input");
 const $btnAddTask = document.querySelector("#add-button");
-//
-const items = $currentTasks.querySelectorAll("li");
-items.forEach((element) => {
-  element.addEventListener("click", (event) => {
-    console.log(event.target);
-  });
-});
+const $completedTasks = document.querySelector("#completedTasks");
+
+//---слушает все элементы в li
+// const items = $currentTasks.querySelectorAll("li");
+// items.forEach((element) => {
+//   element.addEventListener("click", (event) => {
+//     console.log(event.target);
+//   });
+// });
 
 // const item = $currentTasks.children;
 // console.log(Array.from(item));
@@ -66,14 +68,27 @@ function addTask(title, text, priority, date) {
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
                     <div class="dropdown-menu p-2 flex-column">
-                        <button type="button" class="btn btn-success w-100">Complete</button>
+                        <button type="button" onclick="comletedTask(event)" class="btn btn-success w-100">Complete</button>
                         <button type="button" class="btn btn-info w-100 my-2">Edit</button>
-                        <button type="button" class="btn btn-danger w-100">Delete</button>
+                        <button type="button" onclick="deleteTask(event)" class="btn btn-danger w-100">Delete</button>
                     </div>
                 </div>
             </li>`;
 
   $currentTasks.insertAdjacentHTML("afterbegin", taskItem);
+}
+
+function editTask(event) {
+  console.log(event);
+}
+
+function deleteTask(event) {
+  event.target.closest("li").remove();
+}
+
+function comletedTask(event) {
+  let taskItem = event.target.closest("li");
+  $completedTasks.append(taskItem);
 }
 
 // get title, text, priority, date
