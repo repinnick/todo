@@ -1,51 +1,14 @@
 const $currentTasks = document.querySelector("#currentTasks");
 const $priority = document.querySelectorAll(".form-check-input");
-const $btnAddTask = document.querySelector("#add-button");
+const $form = document.querySelector("form");
 const $completedTasks = document.querySelector("#completedTasks");
 
-//---слушает все элементы в li
-// const items = $currentTasks.querySelectorAll("li");
-// items.forEach((element) => {
-//   element.addEventListener("click", (event) => {
-//     console.log(event.target);
-//   });
-// });
-
-// const item = $currentTasks.children;
-// console.log(Array.from(item));
-// Array.from(item).forEach((element) => {
-//   element.addEventListener("click", (event) => {
-//     console.log(event.target);
-//   });
-// });
-
-/* Experimental
-const $modalBody = document.querySelector("#exampleModal");
-const $body = document.body;
-
-function showModal() {
-  const innerItem = `<div class="modal-backdrop fade show"></div>`;
-  $body.classList.add("modal-open");
-  $modalBody.classList.add("show");
-  $modalBody.style.display = "block";
-  document.body.insertAdjacentHTML("beforeend", innerItem);
-}
-
-function closeModal() {
-  let innerItem = document.querySelector(".modal-backdrop");
-  innerItem = "";
-  $body.classList.remove("modal-open");
-  $modalBody.classList.remove("show");
-  $modalBody.style.display = "none";
-}
-*/
-
-// add task after click
-$btnAddTask.addEventListener("click", (event) => {
+// form submit and publish task
+$form.addEventListener("submit", function (event) {
   event.preventDefault();
   const getData = createTask();
   addTask(getData.title, getData.text, getData.priority, getData.date);
-  document.querySelector("form").reset();
+  $form.reset();
 });
 
 // add task with nessesary parametrs
