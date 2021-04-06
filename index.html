@@ -11,6 +11,12 @@
         min-height: calc(100vh - 15px);
         margin: 15px auto 0;
     }
+    .confirm-edit {
+        color: white;
+        outline: none;
+        background-color: greenyellow;
+        display: block;
+    }
     </style>
     <title>LogicPart</title>
 </head>
@@ -45,22 +51,24 @@
                         <div class="w-100 mr-2">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">Title</h5>
+                                <input id="task-title" class="col-6" type="text" hidden>
                                 <div>
                                     <small class="mr-2">High priority</small>
                                     <small>11:00 01.01.2000</small>
                                 </div>
-
                             </div>
                             <p class="mb-1 w-100">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci aliquid eaque eligendi error eveniet nostrum nulla pariatur repudiandae, veniam. Provident.</p>
+                            <textarea id="task-desc" class="col-8 mt-2" type="text" hidden></textarea>
+                            <button class="col-2 confirm-edit" hidden>Submit</button>
                         </div>
                         <div class="dropdown m-2 dropleft">
                             <button class="btn btn-secondary h-100" type="button" id="dropdownMenuItem1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
                             <div class="dropdown-menu p-2 flex-column" aria-labelledby="dropdownMenuItem1">
-                                <button type="button" onclick="comletedTask(event)" class="btn btn-success w-100">Complete</button>
-                                <button type="button" class="btn btn-info w-100 my-2">Edit</button>
-                                <button type="button" onclick="deleteTask(event)" class="btn btn-danger w-100">Delete</button>
+                                <button type="button" class="btn btn-success w-100 complete-btn">Complete</button>
+                                <button type="button" class="btn btn-info w-100 my-2 edit-btn">Edit</button>
+                                <button type="button" class="btn btn-danger w-100 delete-btn">Delete</button>
                             </div>
                         </div>
                     </li>
@@ -133,6 +141,7 @@
             </div>
         </div>
     </div>
+    
     <script src="script.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
