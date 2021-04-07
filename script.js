@@ -12,7 +12,7 @@ countActiveTasks();
 // form submit and publish task
 $form.addEventListener("submit", function (event) {
   event.preventDefault();
-  const getData = createVariablesForTask();
+  const getData = getVariablesForTask();
   $currentTasks.insertAdjacentHTML(
     "afterbegin",
     createTemplateForTask(getData)
@@ -24,7 +24,7 @@ $form.addEventListener("submit", function (event) {
 
 // add task with nessesary parametrs
 function createTemplateForTask(data) {
-  let taskItem = `<li id="${data.id}" class="list-group-item d-flex w-100 mb-2">
+  let taskItem = `<li id="${data.id}" style="background-color: ${data.color}" class="list-group-item d-flex w-100 mb-2">
                 <div class="w-100 mr-2">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">${data.title}</h5>
@@ -51,7 +51,7 @@ function createTemplateForTask(data) {
                 </div>
             </li>`;
 
-  let taskItemComplete = `<li id="${data.id}" class="list-group-item d-flex w-100 mb-2">
+  let taskItemComplete = `<li id="${data.id}" style="background-color: ${data.color}" class="list-group-item d-flex w-100 mb-2">
                             <div class="w-100 mr-2">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1">${data.title}</h5>
@@ -192,16 +192,25 @@ function comletedTask(event) {
 //------>------>------>------>-----
 
 // get title, text, priority, date
-function createVariablesForTask() {
+function getVariablesForTask() {
   const title = document.querySelector("#inputTitle").value;
   const text = document.querySelector("#inputText").value;
   const priorityItems = document.querySelectorAll(".form-check-input");
+  const backgroundColor = document.querySelector("#colorselector");
   const date = getDate();
   let priority = "";
+  let color = "";
 
+  // choose priority
   for (let item of priorityItems) {
     if (item.checked) {
       priority = item.value;
+    }
+  }
+  // choose color
+  for (let key of backgroundColor) {
+    if (key.selected) {
+      color = key.value;
     }
   }
 
@@ -210,6 +219,7 @@ function createVariablesForTask() {
     text: text,
     priority: priority,
     date: date,
+    color: color,
     id: generateId(),
     current: true,
   };
@@ -247,4 +257,8 @@ function countActiveTasks() {
   $currentTasks.previousElementSibling.innerHTML = `ToDo (${countCur})`;
   $completedTasks.previousElementSibling.innerHTML = `Completed (${countComplete})`;
 }
+//------>------>------>------>------
+
+//--------- SORT ALL TASKS ---------
+
 //------>------>------>------>------
