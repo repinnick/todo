@@ -3,29 +3,34 @@ const $priority = document.querySelectorAll(".form-check-input");
 const $form = document.querySelector("form");
 const $completedTasks = document.querySelector("#completedTasks");
 
+localStorageInit();
+
 // form submit and publish task
 $form.addEventListener("submit", function (event) {
   event.preventDefault();
-  const getData = createTask();
-  addTask(getData.title, getData.text, getData.priority, getData.date);
+  const getData = createVariablesForTask();
+  $currentTasks.insertAdjacentHTML(
+    "afterbegin",
+    createTemplateForTask(getData)
+  );
+  localStorage.setItem(getData.id, JSON.stringify(getData));
   $form.reset();
 });
 
 // add task with nessesary parametrs
-function addTask(title, text, priority, date) {
-  let taskItem = `<li class="list-group-item d-flex w-100 mb-2">
+function createTemplateForTask(data) {
+  let taskItem = `<li id="${data.id}" class="list-group-item d-flex w-100 mb-2">
                 <div class="w-100 mr-2">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">${title}</h5>
-                        <input id="task-title" class="col-6" type="text" hidden>
+                        <h5 class="mb-1">${data.title}</h5>
+                        <input class="col-6 task-title" type="text" hidden>
                         <div>
-                            <small class="mr-2">${priority} priority</small>
-                            <small>${date}</small>
+                            <small class="mr-2">${data.priority} priority</small>
+                            <small>${data.date}</small>
                         </div>
-
                     </div>
-                    <p class="mb-1 w-100">${text}</p>
-                    <textarea id="task-desc" class="col-8 mt-2" type="text" hidden></textarea>
+                    <p class="mb-1 w-100">${data.text}</p>
+                    <textarea class="col-8 mt-2 task-desc" type="text" hidden></textarea>
                     <button class="col-2 confirm-edit" hidden>Submit</button>
                 </div>
                 <div class="dropdown m-2 dropleft">
@@ -40,9 +45,56 @@ function addTask(title, text, priority, date) {
                     </div>
                 </div>
             </li>`;
-  // onclick="editTask(event)"
 
-  $currentTasks.insertAdjacentHTML("afterbegin", taskItem);
+  let taskItemComplete = `<li id="${data.id}" class="list-group-item d-flex w-100 mb-2">
+                            <div class="w-100 mr-2">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">${data.title}</h5>
+                                    <input class="col-6 task-title" type="text" hidden>
+                                    <div>
+                                        <small class="mr-2">${data.priority} priority</small>
+                                        <small>${data.date}</small>
+                                    </div>
+                                </div>
+                                <p class="mb-1 w-100">${data.text}</p>
+                                <textarea class="col-8 mt-2 task-desc" type="text" hidden></textarea>
+                                <button class="col-2 confirm-edit" hidden>Submit</button>
+                            </div>
+                            <div class="dropdown m-2 dropleft">
+                                <button class="btn btn-secondary h-100" type="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu p-2 flex-column">
+                                    <button type="button" class="btn btn-danger w-100 delete-btn">Delete</button>
+                                </div>
+                            </div>
+                          </li>`;
+  if (data.current) {
+    return taskItem;
+  } else {
+    return taskItemComplete;
+  }
+}
+
+//local storage for current task
+function localStorageInit() {
+  const keys = Object.keys(localStorage);
+  keys.forEach((key) => {
+    let item = JSON.parse(localStorage.getItem(key));
+    console.log(item.current);
+    if (!item.current) {
+      $completedTasks.insertAdjacentHTML(
+        "afterbegin",
+        createTemplateForTask(item)
+      );
+    } else {
+      $currentTasks.insertAdjacentHTML(
+        "afterbegin",
+        createTemplateForTask(item)
+      );
+    }
+  });
 }
 
 // for buttons edit, delete, completeds
@@ -52,7 +104,7 @@ document.body.addEventListener("click", function (event) {
   if (event.target.classList.contains("complete-btn")) comletedTask(event);
 });
 
-// edit task
+//--------- EDIT TASK--------------
 function editTask(event) {
   const obj = createDOMTags(event);
 
@@ -74,12 +126,12 @@ function createDOMTags(e) {
 
   const title = task.querySelector("h5");
   const desc = task.querySelector("p");
-  //hidden
-  const inputTitle = task.querySelector("#task-title");
-  const inputDesc = task.querySelector("#task-desc");
+  const inputTitle = task.querySelector(".task-title");
+  const inputDesc = task.querySelector(".task-desc");
   const inputButton = task.querySelector(".confirm-edit");
 
   return {
+    task: task,
     title: title,
     desc: desc,
     inputTitle: inputTitle,
@@ -92,8 +144,16 @@ function createDOMTags(e) {
 $currentTasks.addEventListener("click", function (event) {
   if (!event.target.classList.contains("confirm-edit")) return;
   const obj = createDOMTags(event);
+
   obj.title.textContent = obj.inputTitle.value;
   obj.desc.textContent = obj.inputDesc.value;
+
+  let variables = JSON.parse(localStorage.getItem(obj.task.id));
+  variables.title = obj.title.textContent;
+  variables.text = obj.desc.textContent;
+
+  localStorage.setItem(obj.task.id, JSON.stringify(variables));
+
   changeHiddenAttr(
     obj.title,
     obj.desc,
@@ -106,25 +166,37 @@ $currentTasks.addEventListener("click", function (event) {
 // delete/add hidden attribute
 function changeHiddenAttr(...arr) {
   arr.forEach(function (element) {
-    element.hidden = element.hidden ? false : true;
+    element.hidden = !element.hidden;
   });
 }
+//---------------------------------
 
+//--------- DELETE TASK------------
 // delete task
 function deleteTask(event) {
-  event.target.closest("li").remove();
+  const li = event.target.closest("li");
+  localStorage.removeItem(li.id);
+  li.remove();
 }
+//---------------------------------
 
-// complete task
+//-------- COMPLETE TASK-----------
 function comletedTask(event) {
   let taskItem = event.target.closest("li");
-  taskItem.querySelector(".edit-btn").setAttribute("disabled", "disabled");
-  taskItem.querySelector(".complete-btn").setAttribute("disabled", "disabled");
+  taskItem.querySelector(".edit-btn").remove();
+  taskItem.querySelector(".complete-btn").remove();
+
+  let variables = JSON.parse(localStorage.getItem(taskItem.id));
+  variables.current = false;
+  // variables.template = taskItem.outerHTML;
+  localStorage.setItem(taskItem.id, JSON.stringify(variables));
+
   $completedTasks.append(taskItem);
 }
+//---------------------------------
 
 // get title, text, priority, date
-function createTask() {
+function createVariablesForTask() {
   const title = document.querySelector("#inputTitle").value;
   const text = document.querySelector("#inputText").value;
   const priorityItems = document.querySelectorAll(".form-check-input");
@@ -142,6 +214,8 @@ function createTask() {
     text: text,
     priority: priority,
     date: date,
+    id: generateId(),
+    current: true,
   };
 
   return obj;
@@ -164,4 +238,8 @@ function getDate() {
 
 function validateDate(value) {
   return value < 10 ? "0" + value : value;
+}
+
+function generateId() {
+  return "_" + Math.random().toString(36).substr(2, 9);
 }
