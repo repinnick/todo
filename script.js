@@ -3,7 +3,11 @@ const $priority = document.querySelectorAll(".form-check-input");
 const $form = document.querySelector("form");
 const $completedTasks = document.querySelector("#completedTasks");
 
+let countCur = 0;
+let countComplete = 0;
+
 localStorageInit();
+countActiveTasks();
 
 // form submit and publish task
 $form.addEventListener("submit", function (event) {
@@ -14,6 +18,7 @@ $form.addEventListener("submit", function (event) {
     createTemplateForTask(getData)
   );
   localStorage.setItem(getData.id, JSON.stringify(getData));
+  countActiveTasks();
   $form.reset();
 });
 
@@ -166,6 +171,7 @@ function deleteTask(event) {
   const li = event.target.closest("li");
   localStorage.removeItem(li.id);
   li.remove();
+  countActiveTasks();
 }
 //------>------>------>------>-----
 
@@ -181,6 +187,7 @@ function comletedTask(event) {
   localStorage.setItem(taskItem.id, JSON.stringify(variables));
 
   $completedTasks.append(taskItem);
+  countActiveTasks();
 }
 //------>------>------>------>-----
 
@@ -232,3 +239,12 @@ function validateDate(value) {
 function generateId() {
   return "_" + Math.random().toString(36).substr(2, 9);
 }
+
+//------- COUNT ACTIVE TASKS -------
+function countActiveTasks() {
+  countCur = $currentTasks.children.length;
+  countComplete = $completedTasks.children.length;
+  $currentTasks.previousElementSibling.innerHTML = `ToDo (${countCur})`;
+  $completedTasks.previousElementSibling.innerHTML = `Completed (${countComplete})`;
+}
+//------>------>------>------>------
