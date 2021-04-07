@@ -26,7 +26,7 @@ function createTemplateForTask(data) {
                         <input class="col-6 task-title" type="text" hidden>
                         <div>
                             <small class="mr-2">${data.priority} priority</small>
-                            <small>${data.date}</small>
+                            <small class="item-date">${data.date}</small>
                         </div>
                     </div>
                     <p class="mb-1 w-100">${data.text}</p>
@@ -53,7 +53,7 @@ function createTemplateForTask(data) {
                                     <input class="col-6 task-title" type="text" hidden>
                                     <div>
                                         <small class="mr-2">${data.priority} priority</small>
-                                        <small>${data.date}</small>
+                                        <small class="item-date">${data.date}</small>
                                     </div>
                                 </div>
                                 <p class="mb-1 w-100">${data.text}</p>
@@ -77,12 +77,11 @@ function createTemplateForTask(data) {
   }
 }
 
-//local storage for current task
+//------INIT LOCALSTORAGE ITEMS------
 function localStorageInit() {
   const keys = Object.keys(localStorage);
   keys.forEach((key) => {
     let item = JSON.parse(localStorage.getItem(key));
-    console.log(item.current);
     if (!item.current) {
       $completedTasks.insertAdjacentHTML(
         "afterbegin",
@@ -96,25 +95,20 @@ function localStorageInit() {
     }
   });
 }
+//------>------>------>------>------>
 
-// for buttons edit, delete, completeds
+//----LISTENER FOR BUTTONS EDIT, DELETE, COMPLETED----
 document.body.addEventListener("click", function (event) {
   if (event.target.classList.contains("edit-btn")) editTask(event);
   if (event.target.classList.contains("delete-btn")) deleteTask(event);
   if (event.target.classList.contains("complete-btn")) comletedTask(event);
 });
+//------>------>------>------>------>------>------>---
 
 //--------- EDIT TASK--------------
 function editTask(event) {
   const obj = createDOMTags(event);
-
-  changeHiddenAttr(
-    obj.title,
-    obj.desc,
-    obj.inputTitle,
-    obj.inputDesc,
-    obj.inputButton
-  );
+  changeHiddenAttr(obj);
 
   obj.inputTitle.value = obj.title.textContent;
   obj.inputDesc.value = obj.desc.textContent;
@@ -154,22 +148,17 @@ $currentTasks.addEventListener("click", function (event) {
 
   localStorage.setItem(obj.task.id, JSON.stringify(variables));
 
-  changeHiddenAttr(
-    obj.title,
-    obj.desc,
-    obj.inputTitle,
-    obj.inputDesc,
-    obj.inputButton
-  );
+  changeHiddenAttr(obj);
 });
 
 // delete/add hidden attribute
-function changeHiddenAttr(...arr) {
-  arr.forEach(function (element) {
-    element.hidden = !element.hidden;
+function changeHiddenAttr(obj) {
+  const keys = Object.keys(obj);
+  keys.forEach(function (key) {
+    obj[key].hidden = !obj[key].hidden;
   });
 }
-//---------------------------------
+//------>------>------>------>-----
 
 //--------- DELETE TASK------------
 // delete task
@@ -178,7 +167,7 @@ function deleteTask(event) {
   localStorage.removeItem(li.id);
   li.remove();
 }
-//---------------------------------
+//------>------>------>------>-----
 
 //-------- COMPLETE TASK-----------
 function comletedTask(event) {
@@ -193,7 +182,7 @@ function comletedTask(event) {
 
   $completedTasks.append(taskItem);
 }
-//---------------------------------
+//------>------>------>------>-----
 
 // get title, text, priority, date
 function createVariablesForTask() {
