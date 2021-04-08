@@ -328,64 +328,10 @@ function parseToObj(item) {
   return JSON.parse(localStorage.getItem(item));
 }
 
-// со значением true добавить date в один список, с false - в другой.
-// создать новый объект ключ (id) значение (дата)
-// отсортировать по значению с помощью sort.
-// пройтись по документу и перераспределить таски по айдишникам в нужные места.
+//------- CHANGE COLOR THEME -------
+const $bgColor = document.querySelector("#bg-color");
 
-// var list = {"you": 100, "me": 75, "foo": 116, "bar": 15};
-// keysSorted = Object.keys(list).sort(function(a,b){return list[a]-list[b]})
-// console.log(keysSorted);     // bar,me,you,foo
-
-// Ваши объекты могут иметь любое количество свойств, и вы можете выбрать сортировку по любому свойству объекта,
-// которое вы хотите, число или строка, если вы помещаете объекты в массив. Рассмотрим этот массив:
-
-// var arrayOfObjects = [
-//     {
-//         name: 'Diana',
-//         born: 1373925600000, // Mon, Jul 15 2013
-//         num: 4,
-//         sex: 'female'
-//     },
-//     {
-
-//         name: 'Beyonce',
-//         born: 1366832953000, // Wed, Apr 24 2013
-//         num: 2,
-//         sex: 'female'
-//     },
-//     {
-//         name: 'Albert',
-//         born: 1370288700000, // Mon, Jun 3 2013
-//         num: 3,
-//         sex: 'male'
-//     },
-//     {
-//         name: 'Doris',
-//         born: 1354412087000, // Sat, Dec 1 2012
-//         num: 1,
-//         sex: 'female'
-//     }
-// ];
-// сортировка по дате рождения, самый старый первый
-
-// // use slice() to copy the array and not just make a reference
-// var byDate = arrayOfObjects.slice(0);
-// byDate.sort(function(a,b) {
-//     return a.born - b.born;
-// });
-// console.log('by date:');
-// console.log(byDate);
-// сортировать по имени
-
-// var byName = arrayOfObjects.slice(0);
-// byName.sort(function(a,b) {
-//     var x = a.name.toLowerCase();
-//     var y = b.name.toLowerCase();
-//     return x < y ? -1 : x > y ? 1 : 0;
-// });
-
-// console.log('by name:');
-// console.log(byName);
-
+$bgColor.addEventListener("input", function (event) {
+  document.body.style.backgroundColor = event.target.value;
+});
 //------>------>------>------>------
