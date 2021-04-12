@@ -22,7 +22,8 @@ $form.addEventListener("submit", function (event) {
   );
   localStorage.setItem(getData.id, JSON.stringify(getData));
   countActiveTasks();
-  $form.submit().reset();
+  $form.reset();
+  $("#exampleModal").modal("hide");
 });
 
 // add task with nessesary parametrs
