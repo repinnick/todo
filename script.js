@@ -34,13 +34,23 @@ function createTemplateForTask(data) {
                         <h5 class="mb-1">${data.title}</h5>
                         <input class="col-6 task-title" type="text" hidden>
                         <div>
-                            <small class="mr-2">${data.priority} priority</small>
+                            <small class="mr-2"><span class="span-priority">${data.priority}</span> priority</small>
                             <small class="item-date">${createDate(data.date)}</small>
                         </div>
                     </div>
                     <p class="mb-1 w-100">${data.text}</p>
                     <textarea class="col-8 mt-2 task-desc" type="text" hidden></textarea>
-                    <fieldset class="form-group " hidden>
+                    <fieldset class="form-group fieldset-priority" hidden>
+                      <div class="row">
+                          <legend class="col-form-label col-sm-2 pt-0">Change color</legend>
+                          <select class="priority-select">
+                              <option value="Low">Low</option>
+                              <option value="Medium">Medium</option>
+                              <option value="High">High</option>
+                          </select>
+                      </div>
+                    </fieldset>
+                    <fieldset class="form-group fieldset-color" hidden>
                       <div class="row">
                           <legend class="col-form-label col-sm-2 pt-0">Change color</legend>
                           <select class="colorselect">
@@ -77,12 +87,8 @@ function createTemplateForTask(data) {
                                     <h5 class="mb-1">${data.title}</h5>
                                     <input class="col-6 task-title" type="text" hidden>
                                     <div>
-                                        <small class="mr-2">${
-                                          data.priority
-                                        } priority</small>
-                                        <small class="item-date">${createDate(
-                                          data.date
-                                        )}</small>
+                                        <small class="mr-2">${data.priority} priority</small>
+                                        <small class="item-date">${createDate(data.date)}</small>
                                     </div>
                                 </div>
                                 <p class="mb-1 w-100">${data.text}</p>
@@ -154,8 +160,17 @@ function createDOMTags(e) {
   const inputDesc = task.querySelector(".task-desc");
   const inputButton = task.querySelector(".confirm-edit");
   const inputColor = task.querySelector(".colorselect");
-  const inputColorField = inputColor.closest('fieldset')
-  console.log(inputColor)
+  const inputColorField = inputColor.closest('.fieldset-color')
+
+  const inputPriority = task.querySelector(".priority-select");
+  const inputPriorityField = inputPriority.closest('.fieldset-priority')
+
+  let priority;
+  for (let key of inputPriority) {
+    if (key.selected) {
+      priority = key.value;
+    }
+  }
 
   let color = task.style.backgroundColor;
   for (let key of inputColor) {
@@ -173,6 +188,8 @@ function createDOMTags(e) {
     inputButton: inputButton,
     inputColor: color,
     inputColorField: inputColorField,
+    inputPriority: priority,
+    inputPriorityField: inputPriorityField,
   };
 }
 
@@ -184,12 +201,13 @@ $currentTasks.addEventListener("click", function (event) {
   obj.title.textContent = obj.inputTitle.value;
   obj.desc.textContent = obj.inputDesc.value;
   obj.task.style.backgroundColor = obj.inputColor;
-
+  obj.task.querySelector('.span-priority').textContent = obj.inputPriority;
 
   let variables = parseToObj(obj.task.id);
   variables.title = obj.title.textContent;
   variables.text = obj.desc.textContent;
   variables.color = obj.inputColor;
+  if(obj.inputPriority) variables.priority = obj.inputPriority;
 
 
   localStorage.setItem(obj.task.id, JSON.stringify(variables));
@@ -201,7 +219,9 @@ $currentTasks.addEventListener("click", function (event) {
 function changeHiddenAttr(obj) {
   const keys = Object.keys(obj);
   keys.forEach(function (key) {
-    if (key !== "task" || key !== "inputColor") obj[key].hidden = !obj[key].hidden;
+    if (key !== "task" ||
+        key !== "inputColor" ||
+        key !== "inputPriority") obj[key].hidden = !obj[key].hidden;
   });
 }
 //------>------>------>------>-----
