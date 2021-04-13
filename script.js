@@ -28,24 +28,32 @@ $form.addEventListener("submit", function (event) {
 
 // add task with nessesary parametrs
 function createTemplateForTask(data) {
-  let taskItem = `<li id="${data.id}" style="background-color: ${
-    data.color
-  }" class="list-group-item d-flex w-100 mb-2">
+  let taskItem = `<li id="${data.id}" style="background-color: ${data.color}" class="list-group-item d-flex w-100 mb-2">
                 <div class="w-100 mr-2">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">${data.title}</h5>
                         <input class="col-6 task-title" type="text" hidden>
                         <div>
-                            <small class="mr-2">${
-                              data.priority
-                            } priority</small>
-                            <small class="item-date">${createDate(
-                              data.date
-                            )}</small>
+                            <small class="mr-2">${data.priority} priority</small>
+                            <small class="item-date">${createDate(data.date)}</small>
                         </div>
                     </div>
                     <p class="mb-1 w-100">${data.text}</p>
                     <textarea class="col-8 mt-2 task-desc" type="text" hidden></textarea>
+                    <fieldset class="form-group " hidden>
+                      <div class="row">
+                          <legend class="col-form-label col-sm-2 pt-0">Change color</legend>
+                          <select class="colorselect">
+                              <option value="#FFFFFF">default</option>
+                              <option value="#A0522D">sienna</option>
+                              <option value="#CD5C5C">indianred</option>
+                              <option value="#FF4500">orangered</option>
+                              <option value="#DC143C">crimson</option>
+                              <option value="#FF8C00">darkorange</option>
+                              <option value="#C71585">mediumvioletred</option>
+                          </select>
+                      </div>
+                    </fieldset>
                     <button class="col-2 confirm-edit" hidden>OK</button>
                 </div>
                 <div class="dropdown m-2 dropleft">
@@ -141,9 +149,20 @@ function createDOMTags(e) {
 
   const title = task.querySelector("h5");
   const desc = task.querySelector("p");
+
   const inputTitle = task.querySelector(".task-title");
   const inputDesc = task.querySelector(".task-desc");
   const inputButton = task.querySelector(".confirm-edit");
+  const inputColor = task.querySelector(".colorselect");
+  const inputColorField = inputColor.closest('fieldset')
+  console.log(inputColor)
+
+  let color = task.style.backgroundColor;
+  for (let key of inputColor) {
+    if (key.selected) {
+      color = key.value;
+    }
+  }
 
   return {
     task: task,
@@ -152,6 +171,8 @@ function createDOMTags(e) {
     inputTitle: inputTitle,
     inputDesc: inputDesc,
     inputButton: inputButton,
+    inputColor: color,
+    inputColorField: inputColorField,
   };
 }
 
@@ -162,10 +183,14 @@ $currentTasks.addEventListener("click", function (event) {
 
   obj.title.textContent = obj.inputTitle.value;
   obj.desc.textContent = obj.inputDesc.value;
+  obj.task.style.backgroundColor = obj.inputColor;
+
 
   let variables = parseToObj(obj.task.id);
   variables.title = obj.title.textContent;
   variables.text = obj.desc.textContent;
+  variables.color = obj.inputColor;
+
 
   localStorage.setItem(obj.task.id, JSON.stringify(variables));
 
@@ -176,7 +201,7 @@ $currentTasks.addEventListener("click", function (event) {
 function changeHiddenAttr(obj) {
   const keys = Object.keys(obj);
   keys.forEach(function (key) {
-    if (key !== "task") obj[key].hidden = !obj[key].hidden;
+    if (key !== "task" || key !== "inputColor") obj[key].hidden = !obj[key].hidden;
   });
 }
 //------>------>------>------>-----
@@ -336,3 +361,15 @@ $bgColor.addEventListener("input", function (event) {
   document.body.style.backgroundColor = event.target.value;
 });
 //------>------>------>------>------
+
+// dec2hex = function (d) {
+//   if (d > 15) {
+//     return d.toString(16);
+//   } else {
+//     return "0" + d.toString(16);
+//   }
+// };
+
+// rgb = function (r, g, b) {
+//   return "#" + dec2hex(r) + dec2hex(g) + dec2hex(b);
+// };
