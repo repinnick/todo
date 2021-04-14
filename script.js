@@ -42,7 +42,7 @@ function createTemplateForTask(data) {
                     <textarea class="col-8 mt-2 task-desc" type="text" hidden></textarea>
                     <fieldset class="form-group fieldset-priority" hidden>
                       <div class="row">
-                          <legend class="col-form-label col-sm-2 pt-0">Change color</legend>
+                          <legend class="col-form-label col-sm-2 pt-0">Change priority</legend>
                           <select class="priority-select">
                               <option value="Low">Low</option>
                               <option value="Medium">Medium</option>
@@ -147,6 +147,7 @@ function editTask(event) {
 
   obj.inputTitle.value = obj.title.textContent;
   obj.inputDesc.value = obj.desc.textContent;
+
 }
 
 // create nessesary DOM elements
@@ -155,24 +156,35 @@ function createDOMTags(e) {
 
   const title = task.querySelector("h5");
   const desc = task.querySelector("p");
+  let priority = task.querySelector('.span-priority').textContent;
+  let color = parseToObj(task.id).color;
 
   const inputTitle = task.querySelector(".task-title");
   const inputDesc = task.querySelector(".task-desc");
   const inputButton = task.querySelector(".confirm-edit");
   const inputColor = task.querySelector(".colorselect");
   const inputColorField = inputColor.closest('.fieldset-color')
+  // console.log(inputColor.children)
 
   const inputPriority = task.querySelector(".priority-select");
   const inputPriorityField = inputPriority.closest('.fieldset-priority')
 
-  let priority;
+  //priority
+  for (let key of inputPriority) {
+    if (key.value === priority) key.setAttribute("selected", "selected");
+  }
+
   for (let key of inputPriority) {
     if (key.selected) {
       priority = key.value;
     }
   }
 
-  let color = task.style.backgroundColor;
+  //color
+  for (let key of inputColor) {
+    if (key.value === color) key.setAttribute("selected", "selected");
+  }
+
   for (let key of inputColor) {
     if (key.selected) {
       color = key.value;
